@@ -45,8 +45,8 @@ services:
     ports:
       - "8811:5000"
     volumes:
-      - "${IN_DIR}:/app/in"
-      - "${OUT_DIR}:/app/out"
+      - "volumes/in:/app/in"
+      - "volumes/out:/app/out"
       - ./coordinator/coordinator.py:/app/coordinator.py
     depends_on:
       - rabbitmq
