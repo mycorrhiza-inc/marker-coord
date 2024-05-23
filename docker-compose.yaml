@@ -16,6 +16,12 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   marker:
     build: ./marker
     deploy:
@@ -33,7 +39,8 @@ services:
       - ./marker/main.py:/usr/src/app/marker/main.py
     command: python3 -u main.py
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
     restart: always
@@ -49,14 +56,10 @@ services:
       - "./volumes/out:/app/out"
       - ./coordinator/coordinator.py:/app/coordinator.py
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.coordinator.rule=PathPrefix(`/`)"
 
-
-    
     command: python3 -u coordinator.py
-
-    
-    

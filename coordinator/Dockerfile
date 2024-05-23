@@ -6,8 +6,7 @@ ADD --chmod=755 https://github.com/astral-sh/uv/releases/latest/download/uv-inst
 RUN /install.sh && rm /install.sh
  
 WORKDIR /app
-COPY requirements.txt /app/requirements.txt
-# COPY coordinator.py /app/coordinator.py
+COPY . .
  
 RUN pip install --no-cache -r requirements.txt 
 
