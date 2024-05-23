@@ -28,8 +28,8 @@ services:
     env_file:
       - .env
     volumes:
-      - "${IN_DIR}:/app/in"
-      - "${OUT_DIR}:/app/out"
+      - "volumes/in:/app/in"
+      - "volumes/out:/app/out"
       - ./marker/main.py:/usr/src/app/marker/main.py
     command: python3 -u main.py
     depends_on:
