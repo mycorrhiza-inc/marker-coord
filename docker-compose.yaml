@@ -28,8 +28,8 @@ services:
     env_file:
       - .env
     volumes:
-      - "volumes/in:/app/in"
-      - "volumes/out:/app/out"
+      - "./volumes/in:/app/in"
+      - "./volumes/out:/app/out"
       - ./marker/main.py:/usr/src/app/marker/main.py
     command: python3 -u main.py
     depends_on:
@@ -45,8 +45,8 @@ services:
     ports:
       - "8811:5000"
     volumes:
-      - "volumes/in:/app/in"
-      - "volumes/out:/app/out"
+      - "./volumes/in:/app/in"
+      - "./volumes/out:/app/out"
       - ./coordinator/coordinator.py:/app/coordinator.py
     depends_on:
       - rabbitmq
