@@ -1,0 +1,62 @@
+services:
+  reverse-proxy:
+    # official image
+    image: traefik:v2.11
+
+    # eable web ui, listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "8888:80"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  rabbitmq:
+    image: rabbitmq:latest
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  marker:
+    build: ./marker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ "0" ]
+              capabilities: [ gpu ]
+    env_file:
+      - .env
+    volumes:
+      - "${IN_DIR}:/app/in"
+      - "${OUT_DIR}:/app/out"
+      - ./marker/main.py:/usr/src/app/marker/main.py
+    command: python3 -u main.py
+    depends_on:
+      - rabbitmq
+    labels:
+      - "traefik.enable=true"
+    restart: always
+
+  coordinator:
+    build: ./coordinator
+    env_file:
+      - .env
+    ports:
+      - "8811:5000"
+    volumes:
+      - "${IN_DIR}:/app/in"
+      - "${OUT_DIR}:/app/out"
+      - ./coordinator/coordinator.py:/app/coordinator.py
+    depends_on:
+      - rabbitmq
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.coordinator.rule=PathPrefix(`/`)"
+
+
+    
+    command: python3 -u coordinator.py
+
+    
+    
