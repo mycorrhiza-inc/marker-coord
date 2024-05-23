@@ -61,7 +61,7 @@ services:
     volumes:
       - "./volumes/in:/app/in"
       - "./volumes/out:/app/out"
-      - ./coordinator/coordinator.py:/app/coordinator.py
+      # - ./coordinator/coordinator.py:/app/coordinator.py
     depends_on:
       rabbitmq:
         condition: service_healthy
