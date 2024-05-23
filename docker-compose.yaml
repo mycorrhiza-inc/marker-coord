@@ -36,6 +36,7 @@ services:
             - driver: nvidia
               device_ids: [ "0" ]
               capabilities: [ gpu ]
+
     env_file:
       - .env
     volumes:
@@ -66,5 +67,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.coordinator.rule=PathPrefix(`/`)"
+    restart: always
 
     command: python3 -u coordinator.py
