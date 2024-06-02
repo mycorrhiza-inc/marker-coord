@@ -56,8 +56,10 @@ services:
     build: ./coordinator
     env_file:
       - .env
-    expose:
+    ports:
       - "8811:5000"
+    expose:
+      - "5000"
     volumes:
       - "./volumes/in:/app/in"
       - "./volumes/out:/app/out"
